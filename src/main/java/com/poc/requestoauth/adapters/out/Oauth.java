@@ -6,22 +6,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
 
+@Component
 @Slf4j
-@Service
 public class Oauth {
     final Logger logger = LoggerFactory.getLogger(Oauth.class);
-    final RestTemplate restTemplate;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Value("${sensedia.client_id}")
     private String clientId;
@@ -29,10 +30,6 @@ public class Oauth {
     private String clientSecret;
     @Value("${sensedia.code}")
     private String code;
-
-    protected Oauth(@Autowired RestTemplateBuilder builder) {
-        this.restTemplate = builder.build();
-    }
 
     public String execute() {
         log.info("generate-access-token; start;");
