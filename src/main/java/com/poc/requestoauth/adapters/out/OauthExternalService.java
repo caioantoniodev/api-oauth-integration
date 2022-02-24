@@ -47,7 +47,7 @@ public class OauthExternalService {
 
             var requestEntity = new HttpEntity<>(map, headers);
 
-            var response = restTemplate.exchange("https://api-demov3.sensedia.com/dev/oauth/access-toke", HttpMethod.POST, requestEntity, OauthResponse.class);
+            var response = restTemplate.exchange("https://api-demov3.sensedia.com/dev/oauth/access-token", HttpMethod.POST, requestEntity, OauthResponse.class);
 
             log.info(Objects.requireNonNull(response.getBody()).getAccessToken());
 
