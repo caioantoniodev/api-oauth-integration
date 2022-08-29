@@ -13,5 +13,5 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface OauthExternal {
 
     @RequestMapping(method = RequestMethod.POST, path = "${sensedia.api-gateway.resources.oauth}")
-    OAuthResponse accessToken(@RequestHeader HttpHeaders headers, @RequestBody OAuthRequest httpEntity);
+    OAuthResponse accessToken(@RequestHeader HttpHeaders headers, @RequestBody OAuthRequest oAuthRequest);
 }
