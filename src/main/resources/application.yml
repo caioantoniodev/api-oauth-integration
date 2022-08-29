@@ -4,12 +4,10 @@ management:
       base-path: /
 
 sensedia:
-  host: https://api-demov3.sensedia.com/sandbox/caio-study-api/v1
   api-gateway:
-    clientId: 3aca22bb-4475-3be2-85d8-430b5642d867
-    authorizationKey: M2FjYTIyYmItNDQ3NS0zYmUyLTg1ZDgtNDMwYjU2NDJkODY3OmYzYzIzMThjLWY0NmYtMzJlYi1iZTJjLThlYzMyNjA2ODBiYQ==
-  resources:
-    get-payments: /payments
-    oauth: /oauth/token
-  grantType: "client_credentials"
-
+    host: ${MANAGER_DEMO}
+    client-id: ${CLIENT_ID}
+    authorization-key: ${AUTHORIZATION_KEY}
+    resources:
+      get-payments: /caio-study-api/v1/payments
+      oauth: /oauth/access-token
