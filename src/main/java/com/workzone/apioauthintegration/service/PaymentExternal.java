@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(url = "https://api-demov3.sensedia.com/sandbox/caio-study-api/v1/payments", name = "payment")
+@FeignClient(url = "${sensedia.api-gateway.host}", name = "payment")
 public interface PaymentExternal {
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, path = "${sensedia.api-gateway.resources.get-payments}")
     PaymentAuthorization getPayments(@RequestHeader HttpHeaders headers);
 }

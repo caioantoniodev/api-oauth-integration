@@ -4,13 +4,13 @@ import com.workzone.apioauthintegration.entity.PaymentAuthorization;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaymentsService {
+public class PaymentService {
 
     private final PaymentExternal paymentExternal;
     private final AuthenticationService authenticationService;
 
 
-    public PaymentsService(PaymentExternal paymentExternal, AuthenticationService authenticationService) {
+    public PaymentService(PaymentExternal paymentExternal, AuthenticationService authenticationService) {
         this.paymentExternal = paymentExternal;
         this.authenticationService = authenticationService;
     }
