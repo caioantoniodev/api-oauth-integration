@@ -1,14 +1,15 @@
-server:
-  port: 8080
-
-spring:
-  application:
-    name: poc-request-oauth
-  profiles:
-    active: local
+management:
+  endpoints:
+    web:
+      base-path: /
 
 sensedia:
-    uri: https://api-demov3.sensedia.com/dev/oauth
-    client_id: 3aca22bb-4475-3be2-85d8-430b5642d867
-    client_secret: f3c2318c-f46f-32eb-be2c-8ec3260680ba
-    code: Basic M2FjYTIyYmItNDQ3NS0zYmUyLTg1ZDgtNDMwYjU2NDJkODY3OmYzYzIzMThjLWY0NmYtMzJlYi1iZTJjLThlYzMyNjA2ODBiYQ==
+  host: https://api-demov3.sensedia.com/sandbox/caio-study-api/v1
+  api-gateway:
+    clientId: 3aca22bb-4475-3be2-85d8-430b5642d867
+    authorizationKey: M2FjYTIyYmItNDQ3NS0zYmUyLTg1ZDgtNDMwYjU2NDJkODY3OmYzYzIzMThjLWY0NmYtMzJlYi1iZTJjLThlYzMyNjA2ODBiYQ==
+  resources:
+    get-payments: /payments
+    oauth: /oauth/token
+  grantType: "client_credentials"
+
