@@ -11,7 +11,9 @@ sensedia:
   api-gateway:
     host: ${MANAGER_DEMO}
     client-id: ${CLIENT_ID}
+    client-secret: ${CLIENT_SECRET}
     authorization-key: ${AUTHORIZATION_KEY}
     resources:
       get-payments: /caio-study-api/v1/payments
       oauth: /oauth/access-token
+      grant-code: /oauth/grant-code
