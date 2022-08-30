@@ -1,6 +1,6 @@
 package com.workzone.apioauthintegration.adapter.in;
 
-import com.workzone.apioauthintegration.application.PaymentService;
+import com.workzone.apioauthintegration.application.ConsentsService;
 import com.workzone.apioauthintegration.domain.Consents;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/payments")
-public class ConsentsAdapterIn {
+@RequestMapping("/opb/v1/consents")
+public class ConsentsController {
 
-    private final PaymentService paymentService;
+    private final ConsentsService consentsService;
 
-    public ConsentsAdapterIn(PaymentService paymentService) {
-        this.paymentService = paymentService;
+    public ConsentsController(ConsentsService consentsService) {
+        this.consentsService = consentsService;
     }
 
     @GetMapping
     public ResponseEntity<Consents> getPayments() {
 
-        return ResponseEntity.status(HttpStatus.OK).body(paymentService.getPayments());
+        return ResponseEntity.status(HttpStatus.OK).body(consentsService.getPayments());
     }
 }
