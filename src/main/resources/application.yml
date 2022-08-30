@@ -3,6 +3,10 @@ management:
     web:
       base-path: /
 
+retry:
+  configurations:
+    maxAttempts: 4
+
 sensedia:
   api-gateway:
     host: ${MANAGER_DEMO}

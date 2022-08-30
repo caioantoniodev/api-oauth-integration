@@ -3,15 +3,13 @@ package com.workzone.apioauthintegration.service;
 import com.workzone.apioauthintegration.config.ApiGatewayConfig;
 import com.workzone.apioauthintegration.dto.OAuthRequest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static com.workzone.apioauthintegration.entity.HeaderNames.*;
+import static com.workzone.apioauthintegration.entity.HeaderNames.ACCESS_TOKEN;
+import static com.workzone.apioauthintegration.entity.HeaderNames.CLIENT_ID;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Service
@@ -27,10 +25,6 @@ public class AuthenticationService {
         this.oauthExternal = oauthExternal;
     }
 
-    @Retryable(
-            value = HttpServerErrorException.class,
-            maxAttempts = 4,
-            backoff = @Backoff(delay = 2000))
     public String getAccessToken() {
 
         if (Objects.isNull(accessToken) || LocalDateTime.now().plusSeconds(45).isAfter(accessTokenExpiration)) {
