@@ -1,4 +1,4 @@
-package com.workzone.apioauthintegration.entity;
+package com.workzone.apioauthintegration.domain;
 
 import lombok.Data;
 
