@@ -3,15 +3,18 @@ package com.workzone.apioauthintegration.application;
 import com.workzone.apioauthintegration.adapter.dto.OauthBodyAggregate;
 import com.workzone.apioauthintegration.adapter.out.OauthFlowAdapterOut;
 import com.workzone.apioauthintegration.infra.config.ApiGatewayConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Service
+@Slf4j
 public class AuthenticationService {
 
     private final OauthFlowAdapterOut oauthFlowAdapterOut;
@@ -35,11 +38,17 @@ public class AuthenticationService {
 
     public String retrieveAccessToken() {
 
+        log.info("Initialized oauth2 flow.");
         if (Objects.isNull(accessToken)) {
+
             var grantCodeResponse = oauthFlowAdapterOut.generateGrantType(oauthBodyAggregate.buildGrantCodeBody());
+
+            log.info("Retrieve grant-type.");
 
             var oAuthResponse = oauthFlowAdapterOut.generateAccessToken(buildAccessHeaders(),
                     oauthBodyAggregate.buildAccessTokenBody(grantCodeResponse.getRedirectUri().split("=")[1]));
+
+            log.info("Retrieve access-token.");
 
             accessToken = Objects.requireNonNull(oAuthResponse).getAccessToken();
             refreshToken = Objects.requireNonNull(oAuthResponse).getRefreshToken();
@@ -50,10 +59,14 @@ public class AuthenticationService {
             var oAuthResponse = oauthFlowAdapterOut.generateAccessToken(buildAccessHeaders(),
                     oauthBodyAggregate.buildRefreshTokenBody(refreshToken));
 
+            log.info("Retrieve refresh-token.");
+
             accessToken = Objects.requireNonNull(oAuthResponse).getAccessToken();
             refreshToken = Objects.requireNonNull(oAuthResponse).getRefreshToken();
             accessTokenExpiration = LocalDateTime.now().plusSeconds(oAuthResponse.getExpiresIn());
         }
+
+        log.info("Finished oauth2 flow.");
 
         return accessToken;
     }

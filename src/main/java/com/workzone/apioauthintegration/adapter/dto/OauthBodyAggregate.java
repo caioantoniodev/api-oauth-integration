@@ -1,7 +1,9 @@
 package com.workzone.apioauthintegration.adapter.dto;
 
 import com.workzone.apioauthintegration.infra.config.ApiGatewayConfig;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OauthBodyAggregate {
 
     private final ApiGatewayConfig apiGatewayConfig;
