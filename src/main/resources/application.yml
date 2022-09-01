@@ -14,6 +14,6 @@ sensedia:
     client-secret: ${CLIENT_SECRET}
     authorization-key: ${AUTHORIZATION_KEY}
     resources:
-      get-payments: /caio-study-api/v1/payments
+      get-pet: /pet-store-api/v3/pet/{petId}
       oauth: /oauth/access-token
       grant-code: /oauth/grant-code

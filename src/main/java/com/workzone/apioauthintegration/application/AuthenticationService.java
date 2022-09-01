@@ -1,24 +1,27 @@
 package com.workzone.apioauthintegration.application;
 
-import com.workzone.apioauthintegration.adapter.dto.OAuthRequest;
+import com.workzone.apioauthintegration.adapter.dto.OauthBodyAggregate;
 import com.workzone.apioauthintegration.adapter.out.OauthFlowAdapterOut;
 import com.workzone.apioauthintegration.infra.config.ApiGatewayConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 
-import static com.workzone.apioauthintegration.adapter.out.HeaderNames.ACCESS_TOKEN;
-import static com.workzone.apioauthintegration.adapter.out.HeaderNames.CLIENT_ID;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Service
+@Slf4j
 public class AuthenticationService {
 
-    private final ApiGatewayConfig apiGatewayConfig;
-
     private final OauthFlowAdapterOut oauthFlowAdapterOut;
+
+    private final OauthBodyAggregate oauthBodyAggregate;
+
+    private final ApiGatewayConfig apiGatewayConfig;
 
     private String accessToken;
 
@@ -26,18 +29,26 @@ public class AuthenticationService {
 
     private LocalDateTime accessTokenExpiration;
 
-    public AuthenticationService(ApiGatewayConfig apiGatewayConfig, OauthFlowAdapterOut oauthFlowAdapterOut) {
-        this.apiGatewayConfig = apiGatewayConfig;
+    public AuthenticationService(OauthFlowAdapterOut oauthFlowAdapterOut,
+                                 OauthBodyAggregate oauthBodyAggregate, ApiGatewayConfig apiGatewayConfig) {
         this.oauthFlowAdapterOut = oauthFlowAdapterOut;
+        this.oauthBodyAggregate = oauthBodyAggregate;
+        this.apiGatewayConfig = apiGatewayConfig;
     }
 
-    public String getAccessToken() {
+    public String retrieveAccessToken() {
 
+        log.info("Initialized oauth2 flow.");
         if (Objects.isNull(accessToken)) {
-            var grantCodeResponse = oauthFlowAdapterOut.generateGrantType(buildGrantCodeBody());
+
+            var grantCodeResponse = oauthFlowAdapterOut.generateGrantType(oauthBodyAggregate.buildGrantCodeBody());
+
+            log.info("Retrieve grant-type.");
 
             var oAuthResponse = oauthFlowAdapterOut.generateAccessToken(buildAccessHeaders(),
-                            buildAccessTokenBody(grantCodeResponse.getRedirectUri().split("=")[1]));
+                    oauthBodyAggregate.buildAccessTokenBody(grantCodeResponse.getRedirectUri().split("=")[1]));
+
+            log.info("Retrieve access-token.");
 
             accessToken = Objects.requireNonNull(oAuthResponse).getAccessToken();
             refreshToken = Objects.requireNonNull(oAuthResponse).getRefreshToken();
@@ -46,53 +57,25 @@ public class AuthenticationService {
 
         if (LocalDateTime.now().isAfter(accessTokenExpiration)) {
             var oAuthResponse = oauthFlowAdapterOut.generateAccessToken(buildAccessHeaders(),
-                    buildRefreshTokenBody(refreshToken));
+                    oauthBodyAggregate.buildRefreshTokenBody(refreshToken));
+
+            log.info("Retrieve refresh-token.");
 
             accessToken = Objects.requireNonNull(oAuthResponse).getAccessToken();
             refreshToken = Objects.requireNonNull(oAuthResponse).getRefreshToken();
             accessTokenExpiration = LocalDateTime.now().plusSeconds(oAuthResponse.getExpiresIn());
         }
 
+        log.info("Finished oauth2 flow.");
+
         return accessToken;
     }
 
-    public OAuthRequest buildGrantCodeBody() {
-
-        return OAuthRequest.builder()
-                .clientId(apiGatewayConfig.getClientId())
-                .redirectUri("http://localhost")
-                .build();
-    }
-
-    public OAuthRequest buildRefreshTokenBody(String refreshToken) {
-
-        return OAuthRequest.builder()
-                .grantType("refresh_token")
-                .refreshToken(refreshToken)
-                .build();
-    }
-
-    public OAuthRequest buildAccessTokenBody(String code) {
-
-        return OAuthRequest.builder()
-                .grantType("authorization_code")
-                .code(code)
-                .build();
-    }
-    private HttpHeaders buildAccessHeaders() {
+    public HttpHeaders buildAccessHeaders() {
         var headers = new HttpHeaders();
 
         headers.setContentType(APPLICATION_JSON);
         headers.setBasicAuth(apiGatewayConfig.getClientId(), apiGatewayConfig.getClientSecret());
-
-        return headers;
-    }
-
-    public HttpHeaders buildRequestHeaders() {
-        var headers = new HttpHeaders();
-
-        headers.set(CLIENT_ID, apiGatewayConfig.getClientId());
-        headers.set(ACCESS_TOKEN, getAccessToken());
 
         return headers;
     }
