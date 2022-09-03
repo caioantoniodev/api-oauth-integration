@@ -8,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Objects;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -38,17 +37,19 @@ public class AuthenticationService {
 
     public String retrieveAccessToken() {
 
-        log.info("Initialized oauth2 flow.");
+        log.warn("oauth2 flow; start;");
         if (Objects.isNull(accessToken)) {
 
             var grantCodeResponse = oauthFlowAdapterOut.generateGrantType(oauthBodyAggregate.buildGrantCodeBody());
 
-            log.info("Retrieve grant-type.");
+            log.warn("retrieve grant-code;");
 
             var oAuthResponse = oauthFlowAdapterOut.generateAccessToken(buildAccessHeaders(),
                     oauthBodyAggregate.buildAccessTokenBody(grantCodeResponse.getRedirectUri().split("=")[1]));
 
-            log.info("Retrieve access-token.");
+            log.warn("retrieve access-token; expiresIn=\"{} seconds\"; message=\"after {} we generate refresh-token by call\";",
+                    oAuthResponse.getExpiresIn(),
+                    LocalDateTime.now().plusSeconds(oAuthResponse.getExpiresIn()));
 
             accessToken = Objects.requireNonNull(oAuthResponse).getAccessToken();
             refreshToken = Objects.requireNonNull(oAuthResponse).getRefreshToken();
@@ -59,14 +60,14 @@ public class AuthenticationService {
             var oAuthResponse = oauthFlowAdapterOut.generateAccessToken(buildAccessHeaders(),
                     oauthBodyAggregate.buildRefreshTokenBody(refreshToken));
 
-            log.info("Retrieve refresh-token.");
+            log.warn("retrieve refresh-token; expiresIn=\"{} seconds\";", oAuthResponse.getExpiresIn());
 
             accessToken = Objects.requireNonNull(oAuthResponse).getAccessToken();
             refreshToken = Objects.requireNonNull(oAuthResponse).getRefreshToken();
             accessTokenExpiration = LocalDateTime.now().plusSeconds(oAuthResponse.getExpiresIn());
         }
 
-        log.info("Finished oauth2 flow.");
+        log.warn("oauth2 flow; end; success;");
 
         return accessToken;
     }

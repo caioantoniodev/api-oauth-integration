@@ -21,6 +21,6 @@ public class PetStoreController {
     @GetMapping
     public ResponseEntity<Pet> getPet() {
 
-        return ResponseEntity.status(HttpStatus.OK).body(petStoreService.getPayments());
+        return ResponseEntity.status(HttpStatus.OK).body(petStoreService.getPet());
     }
 }
