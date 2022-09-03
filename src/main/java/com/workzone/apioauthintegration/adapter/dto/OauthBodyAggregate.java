@@ -16,7 +16,7 @@ public class OauthBodyAggregate {
 
         return OAuthRequest.builder()
                 .clientId(apiGatewayConfig.getClientId())
-                .redirectUri("http://localhost")
+                .redirectUri("http://localhost/oauth")
                 .build();
     }
 

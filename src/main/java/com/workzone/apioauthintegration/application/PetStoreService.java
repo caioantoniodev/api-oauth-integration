@@ -3,6 +3,7 @@ package com.workzone.apioauthintegration.application;
 import com.workzone.apioauthintegration.adapter.out.PetStoreAdapterOut;
 import com.workzone.apioauthintegration.domain.Pet;
 import com.workzone.apioauthintegration.infra.config.ApiGatewayConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import static com.workzone.apioauthintegration.adapter.out.HeaderNames.ACCESS_TO
 import static com.workzone.apioauthintegration.adapter.out.HeaderNames.CLIENT_ID;
 
 @Service
+@Slf4j
 public class PetStoreService {
 
     private final PetStoreAdapterOut petStoreAdapterOut;
@@ -25,8 +27,15 @@ public class PetStoreService {
         this.apiGatewayConfig = apiGatewayConfig;
     }
 
-    public Pet getPayments() {
-        return petStoreAdapterOut.getPet(buildRequestHeaders(), "1");
+    public Pet getPet() {
+
+        log.warn("get pet flow; start;");
+
+        var pet = petStoreAdapterOut.getPet(buildRequestHeaders(), "1");
+
+        log.warn("get pet flow; end; success;");
+
+        return pet;
     }
 
     public HttpHeaders buildRequestHeaders() {
