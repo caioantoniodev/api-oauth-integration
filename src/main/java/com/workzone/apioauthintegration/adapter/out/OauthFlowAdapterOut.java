@@ -1,7 +1,7 @@
 package com.workzone.apioauthintegration.adapter.out;
 
-import com.workzone.apioauthintegration.adapter.dto.GrantAccessResponse;
 import com.workzone.apioauthintegration.adapter.dto.GrantAccessRequest;
+import com.workzone.apioauthintegration.adapter.dto.GrantAccessResponse;
 import com.workzone.apioauthintegration.adapter.dto.OAuthResponse;
 import com.workzone.apioauthintegration.adapter.dto.OauthRequest;
 import feign.FeignException;

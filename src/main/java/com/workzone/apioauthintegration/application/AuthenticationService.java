@@ -1,10 +1,12 @@
 package com.workzone.apioauthintegration.application;
 
 import com.workzone.apioauthintegration.adapter.dto.OauthBodyAggregate;
+import com.workzone.apioauthintegration.adapter.dto.OauthRequest;
 import com.workzone.apioauthintegration.adapter.out.OauthFlowAdapterOut;
 import com.workzone.apioauthintegration.infra.config.ApiGatewayConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,12 +16,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Service
 @Slf4j
-public class AuthenticationService {
+public class AuthenticationService implements IAuthenticationService {
 
     private final OauthFlowAdapterOut oauthFlowAdapterOut;
-
     private final OauthBodyAggregate oauthBodyAggregate;
-
     private final ApiGatewayConfig apiGatewayConfig;
 
     private static String ACCESS_TOKEN;
@@ -33,45 +33,44 @@ public class AuthenticationService {
         this.apiGatewayConfig = apiGatewayConfig;
     }
 
-    public String retrieveToken() {
+    @Override
+    public String retrieveClientId() {
+        return apiGatewayConfig.getClientId();
+    }
+
+    @Override
+    public String retrieveClientSecret() {
+        return apiGatewayConfig.getClientSecret();
+    }
+
+    @Override
+    public String retrieveAccessToken() {
 
         if (ACCESS_TOKEN == null)
-            this.authenticate();
+            this.accessToken();
 
         if (LocalDateTime.now().plusSeconds(30).isAfter(ACCESS_TOKEN_EXPIRATION))
             this.refreshToken();
 
         return ACCESS_TOKEN;
-
     }
 
-    private void authenticate() {
-
-        var headers = new HttpHeaders();
-
-        headers.setContentType(APPLICATION_JSON);
-        headers.setBasicAuth(apiGatewayConfig.getClientId(), apiGatewayConfig.getClientSecret());
-
-        var body = oauthBodyAggregate.buildAccessTokenBody(this.retrieveGrantCode());
-
-        var accessTokenResponse = oauthFlowAdapterOut.generateAccessToken(headers, body);
-
-        ACCESS_TOKEN = Objects.requireNonNull(accessTokenResponse).getAccessToken();
-        ACCESS_TOKEN_EXPIRATION = LocalDateTime.now().plusSeconds(
-                Objects.requireNonNull(accessTokenResponse.getExpiresIn()));
-        REFRESH_TOKEN = Objects.requireNonNull(accessTokenResponse.getRefreshToken());
+    private void accessToken() {
+        this.authenticate(oauthBodyAggregate.buildAccessTokenBody(this.retrieveGrantCode()));
     }
 
     private void refreshToken() {
+        this.authenticate(oauthBodyAggregate.buildRefreshTokenBody(REFRESH_TOKEN));
+    }
+
+    private void authenticate(OauthRequest oauthRequest) {
 
         var headers = new HttpHeaders();
 
         headers.setContentType(APPLICATION_JSON);
-        headers.setBasicAuth(apiGatewayConfig.getClientId(), apiGatewayConfig.getClientSecret());
+        headers.setBasicAuth(this.retrieveClientId(), this.retrieveClientSecret());
 
-        var body = oauthBodyAggregate.buildRefreshTokenBody(REFRESH_TOKEN);
-
-        var accessTokenResponse = oauthFlowAdapterOut.generateAccessToken(headers, body);
+        var accessTokenResponse = oauthFlowAdapterOut.generateAccessToken(headers, oauthRequest);
 
         ACCESS_TOKEN = Objects.requireNonNull(accessTokenResponse).getAccessToken();
         ACCESS_TOKEN_EXPIRATION = LocalDateTime.now().plusSeconds(
