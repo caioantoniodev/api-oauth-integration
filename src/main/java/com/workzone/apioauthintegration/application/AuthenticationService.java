@@ -4,7 +4,7 @@ import com.workzone.apioauthintegration.adapter.dto.OauthBodyAggregate;
 import com.workzone.apioauthintegration.adapter.out.OauthFlowAdapterOut;
 import com.workzone.apioauthintegration.infra.config.ApiGatewayConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,11 +22,9 @@ public class AuthenticationService {
 
     private final ApiGatewayConfig apiGatewayConfig;
 
-    private String accessToken;
-
-    private String refreshToken;
-
-    private LocalDateTime accessTokenExpiration;
+    private static String ACCESS_TOKEN;
+    private static String REFRESH_TOKEN;
+    private static LocalDateTime ACCESS_TOKEN_EXPIRATION;
 
     public AuthenticationService(OauthFlowAdapterOut oauthFlowAdapterOut,
                                  OauthBodyAggregate oauthBodyAggregate, ApiGatewayConfig apiGatewayConfig) {
@@ -35,49 +33,63 @@ public class AuthenticationService {
         this.apiGatewayConfig = apiGatewayConfig;
     }
 
-    public String retrieveAccessToken() {
+    public String retrieveToken() {
 
-        log.warn("oauth2 flow; start;");
-        if (Objects.isNull(accessToken)) {
+        if (ACCESS_TOKEN == null)
+            this.authenticate();
 
-            var grantCodeResponse = oauthFlowAdapterOut.generateGrantType(oauthBodyAggregate.buildGrantCodeBody());
+        if (LocalDateTime.now().plusSeconds(30).isAfter(ACCESS_TOKEN_EXPIRATION))
+            this.refreshToken();
 
-            log.warn("retrieve grant-code;");
+        return ACCESS_TOKEN;
 
-            var oAuthResponse = oauthFlowAdapterOut.generateAccessToken(buildAccessHeaders(),
-                    oauthBodyAggregate.buildAccessTokenBody(grantCodeResponse.getRedirectUri().split("=")[1]));
-
-            log.warn("retrieve access-token; expiresIn=\"{} seconds\"; message=\"after {} we generate refresh-token by call\";",
-                    oAuthResponse.getExpiresIn(),
-                    LocalDateTime.now().plusSeconds(oAuthResponse.getExpiresIn()));
-
-            accessToken = Objects.requireNonNull(oAuthResponse).getAccessToken();
-            refreshToken = Objects.requireNonNull(oAuthResponse).getRefreshToken();
-            accessTokenExpiration = LocalDateTime.now().plusSeconds(oAuthResponse.getExpiresIn());
-        }
-
-        if (LocalDateTime.now().isAfter(accessTokenExpiration)) {
-            var oAuthResponse = oauthFlowAdapterOut.generateAccessToken(buildAccessHeaders(),
-                    oauthBodyAggregate.buildRefreshTokenBody(refreshToken));
-
-            log.warn("retrieve refresh-token; expiresIn=\"{} seconds\";", oAuthResponse.getExpiresIn());
-
-            accessToken = Objects.requireNonNull(oAuthResponse).getAccessToken();
-            refreshToken = Objects.requireNonNull(oAuthResponse).getRefreshToken();
-            accessTokenExpiration = LocalDateTime.now().plusSeconds(oAuthResponse.getExpiresIn());
-        }
-
-        log.warn("oauth2 flow; end; success;");
-
-        return accessToken;
     }
 
-    public HttpHeaders buildAccessHeaders() {
+    private void authenticate() {
+
         var headers = new HttpHeaders();
 
         headers.setContentType(APPLICATION_JSON);
         headers.setBasicAuth(apiGatewayConfig.getClientId(), apiGatewayConfig.getClientSecret());
 
-        return headers;
+        var body = oauthBodyAggregate.buildAccessTokenBody(this.retrieveGrantCode());
+
+        var accessTokenResponse = oauthFlowAdapterOut.generateAccessToken(headers, body);
+
+        ACCESS_TOKEN = Objects.requireNonNull(accessTokenResponse).getAccessToken();
+        ACCESS_TOKEN_EXPIRATION = LocalDateTime.now().plusSeconds(
+                Objects.requireNonNull(accessTokenResponse.getExpiresIn()));
+        REFRESH_TOKEN = Objects.requireNonNull(accessTokenResponse.getRefreshToken());
+    }
+
+    private void refreshToken() {
+
+        var headers = new HttpHeaders();
+
+        headers.setContentType(APPLICATION_JSON);
+        headers.setBasicAuth(apiGatewayConfig.getClientId(), apiGatewayConfig.getClientSecret());
+
+        var body = oauthBodyAggregate.buildRefreshTokenBody(REFRESH_TOKEN);
+
+        var accessTokenResponse = oauthFlowAdapterOut.generateAccessToken(headers, body);
+
+        ACCESS_TOKEN = Objects.requireNonNull(accessTokenResponse).getAccessToken();
+        ACCESS_TOKEN_EXPIRATION = LocalDateTime.now().plusSeconds(
+                Objects.requireNonNull(accessTokenResponse.getExpiresIn()));
+        REFRESH_TOKEN = Objects.requireNonNull(accessTokenResponse.getRefreshToken());
+    }
+
+    private String retrieveGrantCode() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        var grantAccessResponse = oauthFlowAdapterOut.generateGrantCode(
+                headers, oauthBodyAggregate.buildGrantCodeBody());
+
+        return this.extractGrantCode(grantAccessResponse.getRedirectUri());
+    }
+
+    private String extractGrantCode(String redirectUri) {
+        return redirectUri.split("=")[1];
     }
 }

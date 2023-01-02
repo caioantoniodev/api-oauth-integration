@@ -1,8 +1,9 @@
 package com.workzone.apioauthintegration.adapter.out;
 
-import com.workzone.apioauthintegration.adapter.dto.GrantCodeResponse;
-import com.workzone.apioauthintegration.adapter.dto.OAuthRequest;
+import com.workzone.apioauthintegration.adapter.dto.GrantAccessResponse;
+import com.workzone.apioauthintegration.adapter.dto.GrantAccessRequest;
 import com.workzone.apioauthintegration.adapter.dto.OAuthResponse;
+import com.workzone.apioauthintegration.adapter.dto.OauthRequest;
 import feign.FeignException;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;
@@ -21,12 +22,12 @@ public interface OauthFlowAdapterOut {
             value = FeignException.FeignServerException.class,
             maxAttemptsExpression = "${retry.configurations.maxAttempts}",
             backoff = @Backoff(delay = 2000))
-    GrantCodeResponse generateGrantType(@RequestBody OAuthRequest oAuthRequest);
+    GrantAccessResponse generateGrantCode(@RequestHeader HttpHeaders headers, @RequestBody GrantAccessRequest grantAccessRequest);
 
     @RequestMapping(method = RequestMethod.POST, path = "${sensedia.api-gateway.resources.oauth}")
     @Retryable(
             value = FeignException.FeignServerException.class,
             maxAttemptsExpression = "${retry.configurations.maxAttempts}",
             backoff = @Backoff(delay = 2000))
-    OAuthResponse generateAccessToken(@RequestHeader HttpHeaders headers, @RequestBody OAuthRequest oAuthRequest);
+    OAuthResponse generateAccessToken(@RequestHeader HttpHeaders headers, @RequestBody OauthRequest grantAccessRequest);
 }

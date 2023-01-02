@@ -8,13 +8,7 @@ import lombok.Data;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OAuthRequest {
-
-    @JsonProperty("client_id")
-    private String clientId;
-
-    @JsonProperty("redirect_uri")
-    private String redirectUri;
+public class OauthRequest {
 
     @JsonProperty("code")
     private String code;

@@ -40,9 +40,8 @@ public class PetStoreService {
 
     public HttpHeaders buildRequestHeaders() {
         var headers = new HttpHeaders();
-
         headers.set(CLIENT_ID, apiGatewayConfig.getClientId());
-        headers.set(ACCESS_TOKEN, authenticationService.retrieveAccessToken());
+        headers.set(ACCESS_TOKEN, authenticationService.retrieveToken());
 
         return headers;
     }

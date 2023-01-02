@@ -12,25 +12,25 @@ public class OauthBodyAggregate {
         this.apiGatewayConfig = apiGatewayConfig;
     }
 
-    public OAuthRequest buildGrantCodeBody() {
+    public GrantAccessRequest buildGrantCodeBody() {
 
-        return OAuthRequest.builder()
+        return GrantAccessRequest.builder()
                 .clientId(apiGatewayConfig.getClientId())
                 .redirectUri("http://localhost/oauth")
                 .build();
     }
 
-    public OAuthRequest buildRefreshTokenBody(String refreshToken) {
+    public OauthRequest buildRefreshTokenBody(String refreshToken) {
 
-        return OAuthRequest.builder()
+        return OauthRequest.builder()
                 .grantType("refresh_token")
                 .refreshToken(refreshToken)
                 .build();
     }
 
-    public OAuthRequest buildAccessTokenBody(String code) {
+    public OauthRequest buildAccessTokenBody(String code) {
 
-        return OAuthRequest.builder()
+        return OauthRequest.builder()
                 .grantType("authorization_code")
                 .code(code)
                 .build();

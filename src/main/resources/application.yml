@@ -9,7 +9,7 @@ retry:
 
 sensedia:
   api-gateway:
-    host: ${MANAGER_DEMO}
+    host: ${API_GATEWAY_DEMO}
     client-id: ${CLIENT_ID}
     client-secret: ${CLIENT_SECRET}
     authorization-key: ${AUTHORIZATION_KEY}
