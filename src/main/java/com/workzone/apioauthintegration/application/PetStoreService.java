@@ -16,12 +16,12 @@ public class PetStoreService {
 
     private final PetStoreAdapterOut petStoreAdapterOut;
 
-    private final AuthenticationService authenticationService;
+    private final IAuthenticationService authenticationService;
 
     private final ApiGatewayConfig apiGatewayConfig;
 
 
-    public PetStoreService(PetStoreAdapterOut petStoreAdapterOut, AuthenticationService authenticationService, ApiGatewayConfig apiGatewayConfig) {
+    public PetStoreService(PetStoreAdapterOut petStoreAdapterOut, IAuthenticationService authenticationService, ApiGatewayConfig apiGatewayConfig) {
         this.petStoreAdapterOut = petStoreAdapterOut;
         this.authenticationService = authenticationService;
         this.apiGatewayConfig = apiGatewayConfig;
@@ -40,8 +40,7 @@ public class PetStoreService {
 
     public HttpHeaders buildRequestHeaders() {
         var headers = new HttpHeaders();
-
-        headers.set(CLIENT_ID, apiGatewayConfig.getClientId());
+        headers.set(CLIENT_ID, authenticationService.retrieveClientId());
         headers.set(ACCESS_TOKEN, authenticationService.retrieveAccessToken());
 
         return headers;

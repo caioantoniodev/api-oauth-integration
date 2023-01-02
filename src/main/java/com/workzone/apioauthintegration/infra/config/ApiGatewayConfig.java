@@ -13,7 +13,4 @@ public class ApiGatewayConfig {
 
     @Value("${sensedia.api-gateway.client-secret}")
     private String clientSecret;
-
-    @Value("${sensedia.api-gateway.authorization-key}")
-    private String grantCode;
 }
