@@ -12,10 +12,10 @@ public class OauthBodyAggregate {
         this.apiGatewayConfig = apiGatewayConfig;
     }
 
-    public GrantAccessRequest buildGrantCodeBody() {
+    public GrantAccessRequest buildGrantCodeBody(String clientId) {
 
         return GrantAccessRequest.builder()
-                .clientId(apiGatewayConfig.getClientId())
+                .clientId(clientId)
                 .redirectUri("http://localhost/oauth")
                 .build();
     }
