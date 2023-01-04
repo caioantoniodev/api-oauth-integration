@@ -83,7 +83,7 @@ public class AuthenticationService implements IAuthenticationService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         var grantAccessResponse = oauthFlowAdapterOut.generateGrantCode(
-                headers, oauthBodyAggregate.buildGrantCodeBody());
+                headers, oauthBodyAggregate.buildGrantCodeBody(this.retrieveClientId()));
 
         return this.extractGrantCode(grantAccessResponse.getRedirectUri());
     }
