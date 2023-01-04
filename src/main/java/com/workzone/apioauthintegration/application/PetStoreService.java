@@ -33,7 +33,7 @@ public class PetStoreService {
 
         var pet = petStoreAdapterOut.getPet(buildRequestHeaders(), "1");
 
-        log.warn("get pet flow; end; success;");
+        log.warn("get pet flow; end; retrieved {}", pet);
 
         return pet;
     }
