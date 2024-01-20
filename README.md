@@ -1,1 +1,1 @@
-# API OAuth Integração
+# API Gateway OAuth Integração
