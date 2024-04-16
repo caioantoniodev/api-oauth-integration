@@ -1,0 +1,26 @@
+{
+  "request": {
+    "urlPath": "/oauth/access-token",
+    "method": "POST",
+    "headers": {
+      "Authorization": {
+        "equalTo": "Basic ZjkyMTIxNzMtZTcwNS0zNzNiLWE2OTgtNjE5MjNlMzc4MzU5OjRhYjIzMTdlLTY5M2MtNGQ5Yy1iMjMxLTdlNjkzYzFkOWM5MQ=="
+      }
+    },
+    "bodyPatterns" : [
+      {
+        "matchesJsonPath" : "$[?(@.grant_type=='authorization_code')]"
+      },
+      {
+        "matchesJsonPath" : "$[?(@.code=='8748d39f-1d4f-311f-92c6-4b279db1b317')]"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "access-token-response.json"
+  }
+}

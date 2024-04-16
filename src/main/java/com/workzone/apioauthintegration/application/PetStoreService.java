@@ -15,16 +15,11 @@ import static com.workzone.apioauthintegration.adapter.out.HeaderNames.CLIENT_ID
 public class PetStoreService {
 
     private final PetStoreAdapterOut petStoreAdapterOut;
-
     private final IAuthenticationService authenticationService;
 
-    private final ApiGatewayConfig apiGatewayConfig;
-
-
-    public PetStoreService(PetStoreAdapterOut petStoreAdapterOut, IAuthenticationService authenticationService, ApiGatewayConfig apiGatewayConfig) {
+    public PetStoreService(PetStoreAdapterOut petStoreAdapterOut, IAuthenticationService authenticationService) {
         this.petStoreAdapterOut = petStoreAdapterOut;
         this.authenticationService = authenticationService;
-        this.apiGatewayConfig = apiGatewayConfig;
     }
 
     public Pet getPet() {

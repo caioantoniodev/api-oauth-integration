@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/oauth/grant-code",
+    "bodyPatterns": [
+      {
+        "equalToJson": "{\"client_id\": \"f9212173-e705-373b-a698-61923e378359\",  \"redirect_uri\": \"http://localhost/oauth\" }"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "grant-code-response.json"
+  }
+}

@@ -56,11 +56,14 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     private void accessToken() {
-        this.authenticate(oauthBodyAggregate.buildAccessTokenBody(this.retrieveGrantCode()));
+        var grantCode = this.retrieveGrantCode();
+        var oauthRequest = oauthBodyAggregate.buildAccessTokenBody(grantCode);
+        this.authenticate(oauthRequest);
     }
 
     private void refreshToken() {
-        this.authenticate(oauthBodyAggregate.buildRefreshTokenBody(REFRESH_TOKEN));
+        var oauthRequest = oauthBodyAggregate.buildRefreshTokenBody(REFRESH_TOKEN);
+        this.authenticate(oauthRequest);
     }
 
     private void authenticate(OauthRequest oauthRequest) {
@@ -82,8 +85,8 @@ public class AuthenticationService implements IAuthenticationService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        var grantAccessResponse = oauthFlowAdapterOut.generateGrantCode(
-                headers, oauthBodyAggregate.buildGrantCodeBody(this.retrieveClientId()));
+        var grantCodeBody = oauthBodyAggregate.buildGrantCodeBody(this.retrieveClientId());
+        var grantAccessResponse = oauthFlowAdapterOut.generateGrantCode(headers, grantCodeBody);
 
         return this.extractGrantCode(grantAccessResponse.getRedirectUri());
     }

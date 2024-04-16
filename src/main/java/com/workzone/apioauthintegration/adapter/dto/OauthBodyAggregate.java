@@ -29,7 +29,6 @@ public class OauthBodyAggregate {
     }
 
     public OauthRequest buildAccessTokenBody(String code) {
-
         return OauthRequest.builder()
                 .grantType("authorization_code")
                 .code(code)

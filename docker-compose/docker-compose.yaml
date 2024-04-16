@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  wiremock:
+    platform: linux/x86_64
+    image: "wiremock/wiremock:3.0.0-1-alpine"
+    volumes:
+      - ./wiremock/__files:/home/wiremock/__files
+      - ./wiremock/mappings:/home/wiremock/mappings
+    ports:
+      - "9999:8080"

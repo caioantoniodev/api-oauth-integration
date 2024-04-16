@@ -1,0 +1,21 @@
+{
+  "request": {
+    "urlPath": "/pet-store-api/v3/pet/1",
+    "method": "GET",
+    "headers": {
+      "client_id": {
+        "equalTo": "f9212173-e705-373b-a698-61923e378359"
+      },
+      "access_token": {
+        "equalTo": "57f10f0e-3d2e-311f-a797-4011f66e1cbf"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "bodyFileName": "pet-store-response.json"
+  }
+}
