@@ -45,7 +45,6 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public String retrieveAccessToken() {
-
         if (ACCESS_TOKEN == null)
             this.accessToken();
 

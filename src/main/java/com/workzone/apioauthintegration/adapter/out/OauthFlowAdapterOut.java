@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(url = "${sensedia.api-gateway.host}", name = "oauth")
+@FeignClient(url = "${sensedia.api-gateway.host}", name = "OauthFlowAdapterOut")
 public interface OauthFlowAdapterOut {
 
     @RequestMapping(method = RequestMethod.POST, path = "${sensedia.api-gateway.resources.grant-code}")
