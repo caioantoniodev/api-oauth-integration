@@ -13,6 +13,6 @@ sensedia:
     client-id: ${CLIENT_ID:f9212173-e705-373b-a698-61923e378359}
     client-secret: ${CLIENT_SECRET:4ab2317e-693c-4d9c-b231-7e693c1d9c91}
     resources:
-      get-pet: /pet-store-api/v3/pet/{petId}
+      get-pet: /pet-store-api/v3/pet
       oauth: /oauth/access-token
       grant-code: /oauth/grant-code

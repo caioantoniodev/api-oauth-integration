@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(url = "${sensedia.api-gateway.host}", name = "consent")
+@FeignClient(url = "${sensedia.api-gateway.host}", name = "PetStoreAdapterOut")
 public interface PetStoreAdapterOut {
 
-    @RequestMapping(method = RequestMethod.GET, path = "${sensedia.api-gateway.resources.get-pet}")
+    @RequestMapping(method = RequestMethod.GET, path = "${sensedia.api-gateway.resources.get-pet}/{petId}")
     @Retryable(
             value = FeignException.FeignServerException.class,
             maxAttemptsExpression = "${retry.configurations.maxAttempts}",
             backoff = @Backoff(delay = 2000))
-    Pet getPet(@RequestHeader HttpHeaders headers, @PathVariable("petId") String petId);
+    Pet getPet(@RequestHeader HttpHeaders headers, @PathVariable("petId") Integer petId);
 }
