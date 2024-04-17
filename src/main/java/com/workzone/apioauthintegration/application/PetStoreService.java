@@ -2,7 +2,6 @@ package com.workzone.apioauthintegration.application;
 
 import com.workzone.apioauthintegration.adapter.out.PetStoreAdapterOut;
 import com.workzone.apioauthintegration.domain.Pet;
-import com.workzone.apioauthintegration.infra.config.ApiGatewayConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -22,13 +21,13 @@ public class PetStoreService {
         this.authenticationService = authenticationService;
     }
 
-    public Pet getPet() {
+    public Pet getPet(Integer petId) {
 
-        log.warn("get pet flow; start;");
+        log.info("get pet flow; start;");
 
-        var pet = petStoreAdapterOut.getPet(buildRequestHeaders(), "1");
+        var pet = petStoreAdapterOut.getPet(buildRequestHeaders(), petId);
 
-        log.warn("get pet flow; end; retrieved {}", pet);
+        log.info("get pet flow; end; retrieved {}", pet);
 
         return pet;
     }

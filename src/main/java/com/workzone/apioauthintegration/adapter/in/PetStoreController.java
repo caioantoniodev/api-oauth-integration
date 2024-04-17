@@ -4,9 +4,7 @@ import com.workzone.apioauthintegration.application.PetStoreService;
 import com.workzone.apioauthintegration.domain.Pet;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/pet-store/v1/pets")
@@ -18,9 +16,8 @@ public class PetStoreController {
         this.petStoreService = petStoreService;
     }
 
-    @GetMapping
-    public ResponseEntity<Pet> getPet() {
-
-        return ResponseEntity.status(HttpStatus.OK).body(petStoreService.getPet());
+    @RequestMapping("/{petId}")
+    public ResponseEntity<Pet> getPet(@PathVariable("petId") Integer petId) {
+        return ResponseEntity.status(HttpStatus.OK).body(petStoreService.getPet(petId));
     }
 }
