@@ -2,6 +2,10 @@
   "request": {
     "urlPath": "/oauth/access-token",
     "method": "POST",
+    "basicAuthCredentials": {
+      "username": "f9212173-e705-373b-a698-61923e378359",
+      "password": "4ab2317e-693c-4d9c-b231-7e693c1d9c91"
+    },
     "headers": {
       "Authorization": {
         "equalTo": "Basic ZjkyMTIxNzMtZTcwNS0zNzNiLWE2OTgtNjE5MjNlMzc4MzU5OjRhYjIzMTdlLTY5M2MtNGQ5Yy1iMjMxLTdlNjkzYzFkOWM5MQ=="
